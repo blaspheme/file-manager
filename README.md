@@ -1,13 +1,10 @@
-# File Manager
-技术栈：
-* Kivy+SQLAlchemy
-* SQLite
+# File-Manager
 
+
+# 打包&发布
 ```bash
-python -m pip install "kivy[base]"  # Pre-compiled wheels
-pip install SQLAlchemy
+flutter clean # 清空缓存
+flutter pub get # 重新下载第三方插件集成至项目中
+flutter pub run build_runner build # 生成代码
+flutter build windows # 编译windows
 ```
-
-# 打包
-使用`pyinstaller`打包
-## Windows
