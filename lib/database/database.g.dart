@@ -12,34 +12,33 @@ class $EntityFilesTable extends EntityFiles
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
+      'id', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
       clientDefault: () => _uuid.v4());
   static const VerificationMeta _fileNameMeta =
       const VerificationMeta('fileName');
   @override
   late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
-      'file_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'file_name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _fileTypeMeta =
       const VerificationMeta('fileType');
   @override
   late final GeneratedColumn<String> fileType = GeneratedColumn<String>(
-      'file_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'file_type', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -47,7 +46,7 @@ class $EntityFilesTable extends EntityFiles
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -69,22 +68,16 @@ class $EntityFilesTable extends EntityFiles
     if (data.containsKey('file_name')) {
       context.handle(_fileNameMeta,
           fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta));
-    } else if (isInserting) {
-      context.missing(_fileNameMeta);
     }
     if (data.containsKey('file_type')) {
       context.handle(_fileTypeMeta,
           fileType.isAcceptableOrUnknown(data['file_type']!, _fileTypeMeta));
-    } else if (isInserting) {
-      context.missing(_fileTypeMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -98,23 +91,23 @@ class $EntityFilesTable extends EntityFiles
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   EntityFile map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EntityFile(
       id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}id']),
       fileName: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}file_name'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}file_name']),
       fileType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}file_type'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}file_type']),
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -125,39 +118,61 @@ class $EntityFilesTable extends EntityFiles
 }
 
 class EntityFile extends DataClass implements Insertable<EntityFile> {
-  final String id;
-  final String fileName;
-  final String fileType;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? id;
+  final String? fileName;
+  final String? fileType;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const EntityFile(
-      {required this.id,
-      required this.fileName,
-      required this.fileType,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      {this.id,
+      this.fileName,
+      this.fileType,
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['file_name'] = Variable<String>(fileName);
-    map['file_type'] = Variable<String>(fileType);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<String>(id);
+    }
+    if (!nullToAbsent || fileName != null) {
+      map['file_name'] = Variable<String>(fileName);
+    }
+    if (!nullToAbsent || fileType != null) {
+      map['file_type'] = Variable<String>(fileType);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
   EntityFilesCompanion toCompanion(bool nullToAbsent) {
     return EntityFilesCompanion(
-      id: Value(id),
-      fileName: Value(fileName),
-      fileType: Value(fileType),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      fileName: fileName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileName),
+      fileType: fileType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileType),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -165,41 +180,41 @@ class EntityFile extends DataClass implements Insertable<EntityFile> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntityFile(
-      id: serializer.fromJson<String>(json['id']),
-      fileName: serializer.fromJson<String>(json['fileName']),
-      fileType: serializer.fromJson<String>(json['fileType']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      id: serializer.fromJson<String?>(json['id']),
+      fileName: serializer.fromJson<String?>(json['fileName']),
+      fileType: serializer.fromJson<String?>(json['fileType']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'fileName': serializer.toJson<String>(fileName),
-      'fileType': serializer.toJson<String>(fileType),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'id': serializer.toJson<String?>(id),
+      'fileName': serializer.toJson<String?>(fileName),
+      'fileType': serializer.toJson<String?>(fileType),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   EntityFile copyWith(
-          {String? id,
-          String? fileName,
-          String? fileType,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          {Value<String?> id = const Value.absent(),
+          Value<String?> fileName = const Value.absent(),
+          Value<String?> fileType = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       EntityFile(
-        id: id ?? this.id,
-        fileName: fileName ?? this.fileName,
-        fileType: fileType ?? this.fileType,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        id: id.present ? id.value : this.id,
+        fileName: fileName.present ? fileName.value : this.fileName,
+        fileType: fileType.present ? fileType.value : this.fileType,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
@@ -230,12 +245,12 @@ class EntityFile extends DataClass implements Insertable<EntityFile> {
 }
 
 class EntityFilesCompanion extends UpdateCompanion<EntityFile> {
-  final Value<String> id;
-  final Value<String> fileName;
-  final Value<String> fileType;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String?> id;
+  final Value<String?> fileName;
+  final Value<String?> fileType;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const EntityFilesCompanion({
     this.id = const Value.absent(),
     this.fileName = const Value.absent(),
@@ -246,14 +261,12 @@ class EntityFilesCompanion extends UpdateCompanion<EntityFile> {
   });
   EntityFilesCompanion.insert({
     this.id = const Value.absent(),
-    required String fileName,
-    required String fileType,
-    required String description,
+    this.fileName = const Value.absent(),
+    this.fileType = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  })  : fileName = Value(fileName),
-        fileType = Value(fileType),
-        description = Value(description);
+  });
   static Insertable<EntityFile> custom({
     Expression<String>? id,
     Expression<String>? fileName,
@@ -273,12 +286,12 @@ class EntityFilesCompanion extends UpdateCompanion<EntityFile> {
   }
 
   EntityFilesCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? fileName,
-      Value<String>? fileType,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      {Value<String?>? id,
+      Value<String?>? fileName,
+      Value<String?>? fileType,
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return EntityFilesCompanion(
       id: id ?? this.id,
       fileName: fileName ?? this.fileName,
@@ -336,7 +349,7 @@ class $EntityAuthorsTable extends EntityAuthors
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+      'id', aliasedName, true,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
@@ -347,35 +360,41 @@ class $EntityAuthorsTable extends EntityAuthors
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _imageUrlMeta =
+      const VerificationMeta('imageUrl');
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+      'image_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _nationalityMeta =
       const VerificationMeta('nationality');
   @override
   late final GeneratedColumn<String> nationality = GeneratedColumn<String>(
-      'nationality', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'nationality', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _birthDateMeta =
       const VerificationMeta('birthDate');
   @override
   late final GeneratedColumn<String> birthDate = GeneratedColumn<String>(
-      'birth_date', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'birth_date', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _deathDateMeta =
       const VerificationMeta('deathDate');
   @override
   late final GeneratedColumn<String> deathDate = GeneratedColumn<String>(
-      'death_date', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'death_date', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -383,7 +402,7 @@ class $EntityAuthorsTable extends EntityAuthors
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -391,6 +410,7 @@ class $EntityAuthorsTable extends EntityAuthors
   List<GeneratedColumn> get $columns => [
         id,
         name,
+        imageUrl,
         nationality,
         birthDate,
         deathDate,
@@ -416,33 +436,29 @@ class $EntityAuthorsTable extends EntityAuthors
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
+    }
     if (data.containsKey('nationality')) {
       context.handle(
           _nationalityMeta,
           nationality.isAcceptableOrUnknown(
               data['nationality']!, _nationalityMeta));
-    } else if (isInserting) {
-      context.missing(_nationalityMeta);
     }
     if (data.containsKey('birth_date')) {
       context.handle(_birthDateMeta,
           birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta));
-    } else if (isInserting) {
-      context.missing(_birthDateMeta);
     }
     if (data.containsKey('death_date')) {
       context.handle(_deathDateMeta,
           deathDate.isAcceptableOrUnknown(data['death_date']!, _deathDateMeta));
-    } else if (isInserting) {
-      context.missing(_deathDateMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -462,21 +478,23 @@ class $EntityAuthorsTable extends EntityAuthors
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EntityAuthor(
       id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}id']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      imageUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
       nationality: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}nationality'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}nationality']),
       birthDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}birth_date'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}birth_date']),
       deathDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}death_date'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}death_date']),
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -487,47 +505,81 @@ class $EntityAuthorsTable extends EntityAuthors
 }
 
 class EntityAuthor extends DataClass implements Insertable<EntityAuthor> {
-  final int id;
+  final int? id;
   final String name;
-  final String nationality;
-  final String birthDate;
-  final String deathDate;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? imageUrl;
+  final String? nationality;
+  final String? birthDate;
+  final String? deathDate;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const EntityAuthor(
-      {required this.id,
+      {this.id,
       required this.name,
-      required this.nationality,
-      required this.birthDate,
-      required this.deathDate,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.imageUrl,
+      this.nationality,
+      this.birthDate,
+      this.deathDate,
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
     map['name'] = Variable<String>(name);
-    map['nationality'] = Variable<String>(nationality);
-    map['birth_date'] = Variable<String>(birthDate);
-    map['death_date'] = Variable<String>(deathDate);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || nationality != null) {
+      map['nationality'] = Variable<String>(nationality);
+    }
+    if (!nullToAbsent || birthDate != null) {
+      map['birth_date'] = Variable<String>(birthDate);
+    }
+    if (!nullToAbsent || deathDate != null) {
+      map['death_date'] = Variable<String>(deathDate);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
   EntityAuthorsCompanion toCompanion(bool nullToAbsent) {
     return EntityAuthorsCompanion(
-      id: Value(id),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       name: Value(name),
-      nationality: Value(nationality),
-      birthDate: Value(birthDate),
-      deathDate: Value(deathDate),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
+      nationality: nationality == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nationality),
+      birthDate: birthDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(birthDate),
+      deathDate: deathDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deathDate),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -535,55 +587,60 @@ class EntityAuthor extends DataClass implements Insertable<EntityAuthor> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntityAuthor(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<int?>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      nationality: serializer.fromJson<String>(json['nationality']),
-      birthDate: serializer.fromJson<String>(json['birthDate']),
-      deathDate: serializer.fromJson<String>(json['deathDate']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      nationality: serializer.fromJson<String?>(json['nationality']),
+      birthDate: serializer.fromJson<String?>(json['birthDate']),
+      deathDate: serializer.fromJson<String?>(json['deathDate']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<int?>(id),
       'name': serializer.toJson<String>(name),
-      'nationality': serializer.toJson<String>(nationality),
-      'birthDate': serializer.toJson<String>(birthDate),
-      'deathDate': serializer.toJson<String>(deathDate),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
+      'nationality': serializer.toJson<String?>(nationality),
+      'birthDate': serializer.toJson<String?>(birthDate),
+      'deathDate': serializer.toJson<String?>(deathDate),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   EntityAuthor copyWith(
-          {int? id,
+          {Value<int?> id = const Value.absent(),
           String? name,
-          String? nationality,
-          String? birthDate,
-          String? deathDate,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<String?> imageUrl = const Value.absent(),
+          Value<String?> nationality = const Value.absent(),
+          Value<String?> birthDate = const Value.absent(),
+          Value<String?> deathDate = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       EntityAuthor(
-        id: id ?? this.id,
+        id: id.present ? id.value : this.id,
         name: name ?? this.name,
-        nationality: nationality ?? this.nationality,
-        birthDate: birthDate ?? this.birthDate,
-        deathDate: deathDate ?? this.deathDate,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+        nationality: nationality.present ? nationality.value : this.nationality,
+        birthDate: birthDate.present ? birthDate.value : this.birthDate,
+        deathDate: deathDate.present ? deathDate.value : this.deathDate,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
     return (StringBuffer('EntityAuthor(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('nationality: $nationality, ')
           ..write('birthDate: $birthDate, ')
           ..write('deathDate: $deathDate, ')
@@ -595,14 +652,15 @@ class EntityAuthor extends DataClass implements Insertable<EntityAuthor> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, nationality, birthDate, deathDate,
-      description, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, name, imageUrl, nationality, birthDate,
+      deathDate, description, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is EntityAuthor &&
           other.id == this.id &&
           other.name == this.name &&
+          other.imageUrl == this.imageUrl &&
           other.nationality == this.nationality &&
           other.birthDate == this.birthDate &&
           other.deathDate == this.deathDate &&
@@ -612,17 +670,19 @@ class EntityAuthor extends DataClass implements Insertable<EntityAuthor> {
 }
 
 class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
-  final Value<int> id;
+  final Value<int?> id;
   final Value<String> name;
-  final Value<String> nationality;
-  final Value<String> birthDate;
-  final Value<String> deathDate;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String?> imageUrl;
+  final Value<String?> nationality;
+  final Value<String?> birthDate;
+  final Value<String?> deathDate;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const EntityAuthorsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.nationality = const Value.absent(),
     this.birthDate = const Value.absent(),
     this.deathDate = const Value.absent(),
@@ -633,20 +693,18 @@ class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
   EntityAuthorsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required String nationality,
-    required String birthDate,
-    required String deathDate,
-    required String description,
+    this.imageUrl = const Value.absent(),
+    this.nationality = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.deathDate = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  })  : name = Value(name),
-        nationality = Value(nationality),
-        birthDate = Value(birthDate),
-        deathDate = Value(deathDate),
-        description = Value(description);
+  }) : name = Value(name);
   static Insertable<EntityAuthor> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<String>? imageUrl,
     Expression<String>? nationality,
     Expression<String>? birthDate,
     Expression<String>? deathDate,
@@ -657,6 +715,7 @@ class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (imageUrl != null) 'image_url': imageUrl,
       if (nationality != null) 'nationality': nationality,
       if (birthDate != null) 'birth_date': birthDate,
       if (deathDate != null) 'death_date': deathDate,
@@ -667,17 +726,19 @@ class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
   }
 
   EntityAuthorsCompanion copyWith(
-      {Value<int>? id,
+      {Value<int?>? id,
       Value<String>? name,
-      Value<String>? nationality,
-      Value<String>? birthDate,
-      Value<String>? deathDate,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<String?>? imageUrl,
+      Value<String?>? nationality,
+      Value<String?>? birthDate,
+      Value<String?>? deathDate,
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return EntityAuthorsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      imageUrl: imageUrl ?? this.imageUrl,
       nationality: nationality ?? this.nationality,
       birthDate: birthDate ?? this.birthDate,
       deathDate: deathDate ?? this.deathDate,
@@ -695,6 +756,9 @@ class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
     }
     if (nationality.present) {
       map['nationality'] = Variable<String>(nationality.value);
@@ -722,6 +786,7 @@ class EntityAuthorsCompanion extends UpdateCompanion<EntityAuthor> {
     return (StringBuffer('EntityAuthorsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('nationality: $nationality, ')
           ..write('birthDate: $birthDate, ')
           ..write('deathDate: $deathDate, ')
@@ -742,7 +807,7 @@ class $EntityTagsTable extends EntityTags
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+      'id', aliasedName, true,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
@@ -757,13 +822,13 @@ class $EntityTagsTable extends EntityTags
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -771,7 +836,7 @@ class $EntityTagsTable extends EntityTags
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -801,8 +866,6 @@ class $EntityTagsTable extends EntityTags
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -822,15 +885,15 @@ class $EntityTagsTable extends EntityTags
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EntityTag(
       id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}id']),
       tag: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}tag'])!,
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -841,35 +904,49 @@ class $EntityTagsTable extends EntityTags
 }
 
 class EntityTag extends DataClass implements Insertable<EntityTag> {
-  final int id;
+  final int? id;
   final String tag;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const EntityTag(
-      {required this.id,
+      {this.id,
       required this.tag,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
     map['tag'] = Variable<String>(tag);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
   EntityTagsCompanion toCompanion(bool nullToAbsent) {
     return EntityTagsCompanion(
-      id: Value(id),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       tag: Value(tag),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -877,37 +954,37 @@ class EntityTag extends DataClass implements Insertable<EntityTag> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntityTag(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<int?>(json['id']),
       tag: serializer.fromJson<String>(json['tag']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<int?>(id),
       'tag': serializer.toJson<String>(tag),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   EntityTag copyWith(
-          {int? id,
+          {Value<int?> id = const Value.absent(),
           String? tag,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       EntityTag(
-        id: id ?? this.id,
+        id: id.present ? id.value : this.id,
         tag: tag ?? this.tag,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
@@ -935,11 +1012,11 @@ class EntityTag extends DataClass implements Insertable<EntityTag> {
 }
 
 class EntityTagsCompanion extends UpdateCompanion<EntityTag> {
-  final Value<int> id;
+  final Value<int?> id;
   final Value<String> tag;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const EntityTagsCompanion({
     this.id = const Value.absent(),
     this.tag = const Value.absent(),
@@ -950,11 +1027,10 @@ class EntityTagsCompanion extends UpdateCompanion<EntityTag> {
   EntityTagsCompanion.insert({
     this.id = const Value.absent(),
     required String tag,
-    required String description,
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  })  : tag = Value(tag),
-        description = Value(description);
+  }) : tag = Value(tag);
   static Insertable<EntityTag> custom({
     Expression<int>? id,
     Expression<String>? tag,
@@ -972,11 +1048,11 @@ class EntityTagsCompanion extends UpdateCompanion<EntityTag> {
   }
 
   EntityTagsCompanion copyWith(
-      {Value<int>? id,
+      {Value<int?>? id,
       Value<String>? tag,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return EntityTagsCompanion(
       id: id ?? this.id,
       tag: tag ?? this.tag,
@@ -1029,7 +1105,7 @@ class $EntityItemsTable extends EntityItems
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
+      'id', aliasedName, true,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
@@ -1040,44 +1116,58 @@ class $EntityItemsTable extends EntityItems
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _imageUrlMeta =
+      const VerificationMeta('imageUrl');
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+      'image_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _isbn10Meta = const VerificationMeta('isbn10');
   @override
   late final GeneratedColumn<String> isbn10 = GeneratedColumn<String>(
-      'isbn10', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'isbn10', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _isbn13Meta = const VerificationMeta('isbn13');
   @override
   late final GeneratedColumn<String> isbn13 = GeneratedColumn<String>(
-      'isbn13', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'isbn13', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _publisherMeta =
       const VerificationMeta('publisher');
   @override
   late final GeneratedColumn<String> publisher = GeneratedColumn<String>(
-      'publisher', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'publisher', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _publishDateMeta =
       const VerificationMeta('publishDate');
   @override
   late final GeneratedColumn<String> publishDate = GeneratedColumn<String>(
-      'publish_date', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'publish_date', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _rankMeta = const VerificationMeta('rank');
   @override
   late final GeneratedColumn<int> rank = GeneratedColumn<int>(
       'rank', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _progressMeta =
+      const VerificationMeta('progress');
+  @override
+  late final GeneratedColumn<int> progress = GeneratedColumn<int>(
+      'progress', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -1085,7 +1175,7 @@ class $EntityItemsTable extends EntityItems
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -1093,11 +1183,13 @@ class $EntityItemsTable extends EntityItems
   List<GeneratedColumn> get $columns => [
         id,
         name,
+        imageUrl,
         isbn10,
         isbn13,
         publisher,
         publishDate,
         rank,
+        progress,
         description,
         createdAt,
         updatedAt
@@ -1120,31 +1212,27 @@ class $EntityItemsTable extends EntityItems
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('image_url')) {
+      context.handle(_imageUrlMeta,
+          imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
+    }
     if (data.containsKey('isbn10')) {
       context.handle(_isbn10Meta,
           isbn10.isAcceptableOrUnknown(data['isbn10']!, _isbn10Meta));
-    } else if (isInserting) {
-      context.missing(_isbn10Meta);
     }
     if (data.containsKey('isbn13')) {
       context.handle(_isbn13Meta,
           isbn13.isAcceptableOrUnknown(data['isbn13']!, _isbn13Meta));
-    } else if (isInserting) {
-      context.missing(_isbn13Meta);
     }
     if (data.containsKey('publisher')) {
       context.handle(_publisherMeta,
           publisher.isAcceptableOrUnknown(data['publisher']!, _publisherMeta));
-    } else if (isInserting) {
-      context.missing(_publisherMeta);
     }
     if (data.containsKey('publish_date')) {
       context.handle(
           _publishDateMeta,
           publishDate.isAcceptableOrUnknown(
               data['publish_date']!, _publishDateMeta));
-    } else if (isInserting) {
-      context.missing(_publishDateMeta);
     }
     if (data.containsKey('rank')) {
       context.handle(
@@ -1152,13 +1240,15 @@ class $EntityItemsTable extends EntityItems
     } else if (isInserting) {
       context.missing(_rankMeta);
     }
+    if (data.containsKey('progress')) {
+      context.handle(_progressMeta,
+          progress.isAcceptableOrUnknown(data['progress']!, _progressMeta));
+    }
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1178,25 +1268,29 @@ class $EntityItemsTable extends EntityItems
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return EntityItem(
       id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}id']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      imageUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_url']),
       isbn10: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}isbn10'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}isbn10']),
       isbn13: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}isbn13'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}isbn13']),
       publisher: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}publisher'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}publisher']),
       publishDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}publish_date'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}publish_date']),
       rank: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}rank'])!,
+      progress: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}progress']),
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -1207,55 +1301,99 @@ class $EntityItemsTable extends EntityItems
 }
 
 class EntityItem extends DataClass implements Insertable<EntityItem> {
-  final int id;
+  final int? id;
   final String name;
-  final String isbn10;
-  final String isbn13;
-  final String publisher;
-  final String publishDate;
+  final String? imageUrl;
+  final String? isbn10;
+  final String? isbn13;
+  final String? publisher;
+  final String? publishDate;
   final int rank;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final int? progress;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const EntityItem(
-      {required this.id,
+      {this.id,
       required this.name,
-      required this.isbn10,
-      required this.isbn13,
-      required this.publisher,
-      required this.publishDate,
+      this.imageUrl,
+      this.isbn10,
+      this.isbn13,
+      this.publisher,
+      this.publishDate,
       required this.rank,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.progress,
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
     map['name'] = Variable<String>(name);
-    map['isbn10'] = Variable<String>(isbn10);
-    map['isbn13'] = Variable<String>(isbn13);
-    map['publisher'] = Variable<String>(publisher);
-    map['publish_date'] = Variable<String>(publishDate);
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || isbn10 != null) {
+      map['isbn10'] = Variable<String>(isbn10);
+    }
+    if (!nullToAbsent || isbn13 != null) {
+      map['isbn13'] = Variable<String>(isbn13);
+    }
+    if (!nullToAbsent || publisher != null) {
+      map['publisher'] = Variable<String>(publisher);
+    }
+    if (!nullToAbsent || publishDate != null) {
+      map['publish_date'] = Variable<String>(publishDate);
+    }
     map['rank'] = Variable<int>(rank);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || progress != null) {
+      map['progress'] = Variable<int>(progress);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
   EntityItemsCompanion toCompanion(bool nullToAbsent) {
     return EntityItemsCompanion(
-      id: Value(id),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       name: Value(name),
-      isbn10: Value(isbn10),
-      isbn13: Value(isbn13),
-      publisher: Value(publisher),
-      publishDate: Value(publishDate),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
+      isbn10:
+          isbn10 == null && nullToAbsent ? const Value.absent() : Value(isbn10),
+      isbn13:
+          isbn13 == null && nullToAbsent ? const Value.absent() : Value(isbn13),
+      publisher: publisher == null && nullToAbsent
+          ? const Value.absent()
+          : Value(publisher),
+      publishDate: publishDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(publishDate),
       rank: Value(rank),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      progress: progress == null && nullToAbsent
+          ? const Value.absent()
+          : Value(progress),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -1263,68 +1401,78 @@ class EntityItem extends DataClass implements Insertable<EntityItem> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return EntityItem(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<int?>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      isbn10: serializer.fromJson<String>(json['isbn10']),
-      isbn13: serializer.fromJson<String>(json['isbn13']),
-      publisher: serializer.fromJson<String>(json['publisher']),
-      publishDate: serializer.fromJson<String>(json['publishDate']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      isbn10: serializer.fromJson<String?>(json['isbn10']),
+      isbn13: serializer.fromJson<String?>(json['isbn13']),
+      publisher: serializer.fromJson<String?>(json['publisher']),
+      publishDate: serializer.fromJson<String?>(json['publishDate']),
       rank: serializer.fromJson<int>(json['rank']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      progress: serializer.fromJson<int?>(json['progress']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<int?>(id),
       'name': serializer.toJson<String>(name),
-      'isbn10': serializer.toJson<String>(isbn10),
-      'isbn13': serializer.toJson<String>(isbn13),
-      'publisher': serializer.toJson<String>(publisher),
-      'publishDate': serializer.toJson<String>(publishDate),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
+      'isbn10': serializer.toJson<String?>(isbn10),
+      'isbn13': serializer.toJson<String?>(isbn13),
+      'publisher': serializer.toJson<String?>(publisher),
+      'publishDate': serializer.toJson<String?>(publishDate),
       'rank': serializer.toJson<int>(rank),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'progress': serializer.toJson<int?>(progress),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   EntityItem copyWith(
-          {int? id,
+          {Value<int?> id = const Value.absent(),
           String? name,
-          String? isbn10,
-          String? isbn13,
-          String? publisher,
-          String? publishDate,
+          Value<String?> imageUrl = const Value.absent(),
+          Value<String?> isbn10 = const Value.absent(),
+          Value<String?> isbn13 = const Value.absent(),
+          Value<String?> publisher = const Value.absent(),
+          Value<String?> publishDate = const Value.absent(),
           int? rank,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<int?> progress = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       EntityItem(
-        id: id ?? this.id,
+        id: id.present ? id.value : this.id,
         name: name ?? this.name,
-        isbn10: isbn10 ?? this.isbn10,
-        isbn13: isbn13 ?? this.isbn13,
-        publisher: publisher ?? this.publisher,
-        publishDate: publishDate ?? this.publishDate,
+        imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+        isbn10: isbn10.present ? isbn10.value : this.isbn10,
+        isbn13: isbn13.present ? isbn13.value : this.isbn13,
+        publisher: publisher.present ? publisher.value : this.publisher,
+        publishDate: publishDate.present ? publishDate.value : this.publishDate,
         rank: rank ?? this.rank,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        progress: progress.present ? progress.value : this.progress,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
     return (StringBuffer('EntityItem(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('isbn10: $isbn10, ')
           ..write('isbn13: $isbn13, ')
           ..write('publisher: $publisher, ')
           ..write('publishDate: $publishDate, ')
           ..write('rank: $rank, ')
+          ..write('progress: $progress, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1333,43 +1481,49 @@ class EntityItem extends DataClass implements Insertable<EntityItem> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, isbn10, isbn13, publisher,
-      publishDate, rank, description, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, name, imageUrl, isbn10, isbn13, publisher,
+      publishDate, rank, progress, description, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is EntityItem &&
           other.id == this.id &&
           other.name == this.name &&
+          other.imageUrl == this.imageUrl &&
           other.isbn10 == this.isbn10 &&
           other.isbn13 == this.isbn13 &&
           other.publisher == this.publisher &&
           other.publishDate == this.publishDate &&
           other.rank == this.rank &&
+          other.progress == this.progress &&
           other.description == this.description &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
 
 class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
-  final Value<int> id;
+  final Value<int?> id;
   final Value<String> name;
-  final Value<String> isbn10;
-  final Value<String> isbn13;
-  final Value<String> publisher;
-  final Value<String> publishDate;
+  final Value<String?> imageUrl;
+  final Value<String?> isbn10;
+  final Value<String?> isbn13;
+  final Value<String?> publisher;
+  final Value<String?> publishDate;
   final Value<int> rank;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<int?> progress;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const EntityItemsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.imageUrl = const Value.absent(),
     this.isbn10 = const Value.absent(),
     this.isbn13 = const Value.absent(),
     this.publisher = const Value.absent(),
     this.publishDate = const Value.absent(),
     this.rank = const Value.absent(),
+    this.progress = const Value.absent(),
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1377,29 +1531,28 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
   EntityItemsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required String isbn10,
-    required String isbn13,
-    required String publisher,
-    required String publishDate,
+    this.imageUrl = const Value.absent(),
+    this.isbn10 = const Value.absent(),
+    this.isbn13 = const Value.absent(),
+    this.publisher = const Value.absent(),
+    this.publishDate = const Value.absent(),
     required int rank,
-    required String description,
+    this.progress = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   })  : name = Value(name),
-        isbn10 = Value(isbn10),
-        isbn13 = Value(isbn13),
-        publisher = Value(publisher),
-        publishDate = Value(publishDate),
-        rank = Value(rank),
-        description = Value(description);
+        rank = Value(rank);
   static Insertable<EntityItem> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<String>? imageUrl,
     Expression<String>? isbn10,
     Expression<String>? isbn13,
     Expression<String>? publisher,
     Expression<String>? publishDate,
     Expression<int>? rank,
+    Expression<int>? progress,
     Expression<String>? description,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1407,11 +1560,13 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (imageUrl != null) 'image_url': imageUrl,
       if (isbn10 != null) 'isbn10': isbn10,
       if (isbn13 != null) 'isbn13': isbn13,
       if (publisher != null) 'publisher': publisher,
       if (publishDate != null) 'publish_date': publishDate,
       if (rank != null) 'rank': rank,
+      if (progress != null) 'progress': progress,
       if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1419,24 +1574,28 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
   }
 
   EntityItemsCompanion copyWith(
-      {Value<int>? id,
+      {Value<int?>? id,
       Value<String>? name,
-      Value<String>? isbn10,
-      Value<String>? isbn13,
-      Value<String>? publisher,
-      Value<String>? publishDate,
+      Value<String?>? imageUrl,
+      Value<String?>? isbn10,
+      Value<String?>? isbn13,
+      Value<String?>? publisher,
+      Value<String?>? publishDate,
       Value<int>? rank,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<int?>? progress,
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return EntityItemsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      imageUrl: imageUrl ?? this.imageUrl,
       isbn10: isbn10 ?? this.isbn10,
       isbn13: isbn13 ?? this.isbn13,
       publisher: publisher ?? this.publisher,
       publishDate: publishDate ?? this.publishDate,
       rank: rank ?? this.rank,
+      progress: progress ?? this.progress,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1452,6 +1611,9 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
     if (isbn10.present) {
       map['isbn10'] = Variable<String>(isbn10.value);
     }
@@ -1466,6 +1628,9 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
     }
     if (rank.present) {
       map['rank'] = Variable<int>(rank.value);
+    }
+    if (progress.present) {
+      map['progress'] = Variable<int>(progress.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -1484,11 +1649,13 @@ class EntityItemsCompanion extends UpdateCompanion<EntityItem> {
     return (StringBuffer('EntityItemsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('imageUrl: $imageUrl, ')
           ..write('isbn10: $isbn10, ')
           ..write('isbn13: $isbn13, ')
           ..write('publisher: $publisher, ')
           ..write('publishDate: $publishDate, ')
           ..write('rank: $rank, ')
+          ..write('progress: $progress, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1519,17 +1686,25 @@ class $RelationItemFilesTable extends RelationItemFiles
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES entity_files (id)'));
+  static const VerificationMeta _fileOrderMeta =
+      const VerificationMeta('fileOrder');
+  @override
+  late final GeneratedColumn<int> fileOrder = GeneratedColumn<int>(
+      'file_order', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -1537,13 +1712,13 @@ class $RelationItemFilesTable extends RelationItemFiles
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
   @override
   List<GeneratedColumn> get $columns =>
-      [itemId, fileId, description, createdAt, updatedAt];
+      [itemId, fileId, fileOrder, description, createdAt, updatedAt];
   @override
   String get aliasedName => _alias ?? 'relation_item_files';
   @override
@@ -1565,13 +1740,15 @@ class $RelationItemFilesTable extends RelationItemFiles
     } else if (isInserting) {
       context.missing(_fileIdMeta);
     }
+    if (data.containsKey('file_order')) {
+      context.handle(_fileOrderMeta,
+          fileOrder.isAcceptableOrUnknown(data['file_order']!, _fileOrderMeta));
+    }
     if (data.containsKey('description')) {
       context.handle(
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1598,12 +1775,14 @@ class $RelationItemFilesTable extends RelationItemFiles
           .read(DriftSqlType.int, data['${effectivePrefix}item_id'])!,
       fileId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}file_id'])!,
+      fileOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}file_order']),
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -1617,23 +1796,34 @@ class RelationItemFile extends DataClass
     implements Insertable<RelationItemFile> {
   final int itemId;
   final String fileId;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final int? fileOrder;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const RelationItemFile(
       {required this.itemId,
       required this.fileId,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.fileOrder,
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['item_id'] = Variable<int>(itemId);
     map['file_id'] = Variable<String>(fileId);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || fileOrder != null) {
+      map['file_order'] = Variable<int>(fileOrder);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
@@ -1641,9 +1831,18 @@ class RelationItemFile extends DataClass
     return RelationItemFilesCompanion(
       itemId: Value(itemId),
       fileId: Value(fileId),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      fileOrder: fileOrder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileOrder),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -1653,9 +1852,10 @@ class RelationItemFile extends DataClass
     return RelationItemFile(
       itemId: serializer.fromJson<int>(json['itemId']),
       fileId: serializer.fromJson<String>(json['fileId']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      fileOrder: serializer.fromJson<int?>(json['fileOrder']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
@@ -1664,30 +1864,34 @@ class RelationItemFile extends DataClass
     return <String, dynamic>{
       'itemId': serializer.toJson<int>(itemId),
       'fileId': serializer.toJson<String>(fileId),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'fileOrder': serializer.toJson<int?>(fileOrder),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   RelationItemFile copyWith(
           {int? itemId,
           String? fileId,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<int?> fileOrder = const Value.absent(),
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       RelationItemFile(
         itemId: itemId ?? this.itemId,
         fileId: fileId ?? this.fileId,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        fileOrder: fileOrder.present ? fileOrder.value : this.fileOrder,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
     return (StringBuffer('RelationItemFile(')
           ..write('itemId: $itemId, ')
           ..write('fileId: $fileId, ')
+          ..write('fileOrder: $fileOrder, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1697,13 +1901,14 @@ class RelationItemFile extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(itemId, fileId, description, createdAt, updatedAt);
+      Object.hash(itemId, fileId, fileOrder, description, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RelationItemFile &&
           other.itemId == this.itemId &&
           other.fileId == this.fileId &&
+          other.fileOrder == this.fileOrder &&
           other.description == this.description &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1712,12 +1917,14 @@ class RelationItemFile extends DataClass
 class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
   final Value<int> itemId;
   final Value<String> fileId;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<int?> fileOrder;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const RelationItemFilesCompanion({
     this.itemId = const Value.absent(),
     this.fileId = const Value.absent(),
+    this.fileOrder = const Value.absent(),
     this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1725,15 +1932,16 @@ class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
   RelationItemFilesCompanion.insert({
     required int itemId,
     required String fileId,
-    required String description,
+    this.fileOrder = const Value.absent(),
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   })  : itemId = Value(itemId),
-        fileId = Value(fileId),
-        description = Value(description);
+        fileId = Value(fileId);
   static Insertable<RelationItemFile> custom({
     Expression<int>? itemId,
     Expression<String>? fileId,
+    Expression<int>? fileOrder,
     Expression<String>? description,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1741,6 +1949,7 @@ class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
     return RawValuesInsertable({
       if (itemId != null) 'item_id': itemId,
       if (fileId != null) 'file_id': fileId,
+      if (fileOrder != null) 'file_order': fileOrder,
       if (description != null) 'description': description,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1750,12 +1959,14 @@ class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
   RelationItemFilesCompanion copyWith(
       {Value<int>? itemId,
       Value<String>? fileId,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<int?>? fileOrder,
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return RelationItemFilesCompanion(
       itemId: itemId ?? this.itemId,
       fileId: fileId ?? this.fileId,
+      fileOrder: fileOrder ?? this.fileOrder,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1770,6 +1981,9 @@ class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
     }
     if (fileId.present) {
       map['file_id'] = Variable<String>(fileId.value);
+    }
+    if (fileOrder.present) {
+      map['file_order'] = Variable<int>(fileOrder.value);
     }
     if (description.present) {
       map['description'] = Variable<String>(description.value);
@@ -1788,6 +2002,7 @@ class RelationItemFilesCompanion extends UpdateCompanion<RelationItemFile> {
     return (StringBuffer('RelationItemFilesCompanion(')
           ..write('itemId: $itemId, ')
           ..write('fileId: $fileId, ')
+          ..write('fileOrder: $fileOrder, ')
           ..write('description: $description, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1823,13 +2038,13 @@ class $RelationItemAuthorsTable extends RelationItemAuthors
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -1837,7 +2052,7 @@ class $RelationItemAuthorsTable extends RelationItemAuthors
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -1870,8 +2085,6 @@ class $RelationItemAuthorsTable extends RelationItemAuthors
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -1899,11 +2112,11 @@ class $RelationItemAuthorsTable extends RelationItemAuthors
       authorId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}author_id'])!,
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -1917,23 +2130,29 @@ class RelationItemAuthor extends DataClass
     implements Insertable<RelationItemAuthor> {
   final int itemId;
   final int authorId;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const RelationItemAuthor(
       {required this.itemId,
       required this.authorId,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['item_id'] = Variable<int>(itemId);
     map['author_id'] = Variable<int>(authorId);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
@@ -1941,9 +2160,15 @@ class RelationItemAuthor extends DataClass
     return RelationItemAuthorsCompanion(
       itemId: Value(itemId),
       authorId: Value(authorId),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -1953,9 +2178,9 @@ class RelationItemAuthor extends DataClass
     return RelationItemAuthor(
       itemId: serializer.fromJson<int>(json['itemId']),
       authorId: serializer.fromJson<int>(json['authorId']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
@@ -1964,24 +2189,24 @@ class RelationItemAuthor extends DataClass
     return <String, dynamic>{
       'itemId': serializer.toJson<int>(itemId),
       'authorId': serializer.toJson<int>(authorId),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   RelationItemAuthor copyWith(
           {int? itemId,
           int? authorId,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       RelationItemAuthor(
         itemId: itemId ?? this.itemId,
         authorId: authorId ?? this.authorId,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
@@ -2012,9 +2237,9 @@ class RelationItemAuthor extends DataClass
 class RelationItemAuthorsCompanion extends UpdateCompanion<RelationItemAuthor> {
   final Value<int> itemId;
   final Value<int> authorId;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const RelationItemAuthorsCompanion({
     this.itemId = const Value.absent(),
     this.authorId = const Value.absent(),
@@ -2025,12 +2250,11 @@ class RelationItemAuthorsCompanion extends UpdateCompanion<RelationItemAuthor> {
   RelationItemAuthorsCompanion.insert({
     required int itemId,
     required int authorId,
-    required String description,
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   })  : itemId = Value(itemId),
-        authorId = Value(authorId),
-        description = Value(description);
+        authorId = Value(authorId);
   static Insertable<RelationItemAuthor> custom({
     Expression<int>? itemId,
     Expression<int>? authorId,
@@ -2050,9 +2274,9 @@ class RelationItemAuthorsCompanion extends UpdateCompanion<RelationItemAuthor> {
   RelationItemAuthorsCompanion copyWith(
       {Value<int>? itemId,
       Value<int>? authorId,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return RelationItemAuthorsCompanion(
       itemId: itemId ?? this.itemId,
       authorId: authorId ?? this.authorId,
@@ -2122,13 +2346,13 @@ class $RelationItemTagsTable extends RelationItemTags
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      'description', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
+      'created_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -2136,7 +2360,7 @@ class $RelationItemTagsTable extends RelationItemTags
       const VerificationMeta('updatedAt');
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, false,
+      'updated_at', aliasedName, true,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDate);
@@ -2169,8 +2393,6 @@ class $RelationItemTagsTable extends RelationItemTags
           _descriptionMeta,
           description.isAcceptableOrUnknown(
               data['description']!, _descriptionMeta));
-    } else if (isInserting) {
-      context.missing(_descriptionMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
@@ -2198,11 +2420,11 @@ class $RelationItemTagsTable extends RelationItemTags
       tagId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}tag_id'])!,
       description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}description']),
       createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
       updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
     );
   }
 
@@ -2215,23 +2437,29 @@ class $RelationItemTagsTable extends RelationItemTags
 class RelationItemTag extends DataClass implements Insertable<RelationItemTag> {
   final int itemId;
   final int tagId;
-  final String description;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? description;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   const RelationItemTag(
       {required this.itemId,
       required this.tagId,
-      required this.description,
-      required this.createdAt,
-      required this.updatedAt});
+      this.description,
+      this.createdAt,
+      this.updatedAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['item_id'] = Variable<int>(itemId);
     map['tag_id'] = Variable<int>(tagId);
-    map['description'] = Variable<String>(description);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
@@ -2239,9 +2467,15 @@ class RelationItemTag extends DataClass implements Insertable<RelationItemTag> {
     return RelationItemTagsCompanion(
       itemId: Value(itemId),
       tagId: Value(tagId),
-      description: Value(description),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -2251,9 +2485,9 @@ class RelationItemTag extends DataClass implements Insertable<RelationItemTag> {
     return RelationItemTag(
       itemId: serializer.fromJson<int>(json['itemId']),
       tagId: serializer.fromJson<int>(json['tagId']),
-      description: serializer.fromJson<String>(json['description']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      description: serializer.fromJson<String?>(json['description']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
@@ -2262,24 +2496,24 @@ class RelationItemTag extends DataClass implements Insertable<RelationItemTag> {
     return <String, dynamic>{
       'itemId': serializer.toJson<int>(itemId),
       'tagId': serializer.toJson<int>(tagId),
-      'description': serializer.toJson<String>(description),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'description': serializer.toJson<String?>(description),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
   RelationItemTag copyWith(
           {int? itemId,
           int? tagId,
-          String? description,
-          DateTime? createdAt,
-          DateTime? updatedAt}) =>
+          Value<String?> description = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
       RelationItemTag(
         itemId: itemId ?? this.itemId,
         tagId: tagId ?? this.tagId,
-        description: description ?? this.description,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
+        description: description.present ? description.value : this.description,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
   @override
   String toString() {
@@ -2310,9 +2544,9 @@ class RelationItemTag extends DataClass implements Insertable<RelationItemTag> {
 class RelationItemTagsCompanion extends UpdateCompanion<RelationItemTag> {
   final Value<int> itemId;
   final Value<int> tagId;
-  final Value<String> description;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
+  final Value<String?> description;
+  final Value<DateTime?> createdAt;
+  final Value<DateTime?> updatedAt;
   const RelationItemTagsCompanion({
     this.itemId = const Value.absent(),
     this.tagId = const Value.absent(),
@@ -2323,12 +2557,11 @@ class RelationItemTagsCompanion extends UpdateCompanion<RelationItemTag> {
   RelationItemTagsCompanion.insert({
     required int itemId,
     required int tagId,
-    required String description,
+    this.description = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   })  : itemId = Value(itemId),
-        tagId = Value(tagId),
-        description = Value(description);
+        tagId = Value(tagId);
   static Insertable<RelationItemTag> custom({
     Expression<int>? itemId,
     Expression<int>? tagId,
@@ -2348,9 +2581,9 @@ class RelationItemTagsCompanion extends UpdateCompanion<RelationItemTag> {
   RelationItemTagsCompanion copyWith(
       {Value<int>? itemId,
       Value<int>? tagId,
-      Value<String>? description,
-      Value<DateTime>? createdAt,
-      Value<DateTime>? updatedAt}) {
+      Value<String?>? description,
+      Value<DateTime?>? createdAt,
+      Value<DateTime?>? updatedAt}) {
     return RelationItemTagsCompanion(
       itemId: itemId ?? this.itemId,
       tagId: tagId ?? this.tagId,
