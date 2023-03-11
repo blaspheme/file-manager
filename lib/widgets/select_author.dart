@@ -129,16 +129,17 @@ class _AuthorSelectState extends State<AuthorSelect> {
                 dropDownList: dropDownList.toList(),
                 onChanged: (val) {
                   _selectedId = int.parse(val.value);
+                  save();
                 },
               ),
             ),
-            TextButton(onPressed: save, child: const Text('增加')),
-            TextButton(
-                child: const Text('新增作者'),
-                onPressed: () {
-                  Navigator.pushNamed(context, "author/edit",
-                      arguments: <String, int>{'id': 0});
-                }),
+            IconButton(
+              icon: const Icon(Icons.add_box),
+              onPressed: () {
+                Navigator.pushNamed(context, "author/edit",
+                    arguments: <String, int>{'id': 0});
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {

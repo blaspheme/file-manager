@@ -129,16 +129,17 @@ class _TagSelectState extends State<TagSelect> {
                 dropDownList: dropDownList.toList(),
                 onChanged: (val) {
                   _selectedId = int.parse(val.value);
+                  save();
                 },
               ),
             ),
-            TextButton(onPressed: save, child: const Text('增加')),
-            TextButton(
-                child: const Text('新增标签'),
-                onPressed: () {
-                  Navigator.pushNamed(context, "tag/edit",
-                      arguments: <String, int>{'id': 0});
-                }),
+            IconButton(
+              icon: const Icon(Icons.add_box),
+              onPressed: () {
+                Navigator.pushNamed(context, "tag/edit",
+                    arguments: <String, int>{'id': 0});
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () {
