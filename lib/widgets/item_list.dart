@@ -110,23 +110,18 @@ class _ItemListState extends State<ItemList> {
               child: ScrollableDataCell(DataTable(
                 columns: const [
                   DataColumn(label: Text('名称')),
+                  DataColumn(label: Text('进度')),
                   DataColumn(label: Text('作者')),
-                  DataColumn(label: Text('出版社')),
-                  DataColumn(label: Text('出版日期')),
                   DataColumn(label: Text('Tag')),
                   DataColumn(label: Text('评分')),
-                  DataColumn(label: Text('进度')),
                 ],
                 rows: _entityItemList
                     .map((item) => DataRow(cells: [
                           DataCell(DataCellItem(item.entityItem)),
+                          DataCell(DataCellProgress(item.entityItem)),
                           DataCell(DataCellAuthor(item.entityAuthorList)),
-                          DataCell(Text(item.entityItem.publisher.toString())),
-                          DataCell(
-                              Text(item.entityItem.publishDate.toString())),
                           DataCell(DataCellTag(item.entityTagList)),
                           DataCell(Text(item.entityItem.rank.toString())),
-                          DataCell(DataCellProgress(item.entityItem)),
                         ]))
                     .toList(),
               )),
