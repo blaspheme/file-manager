@@ -116,24 +116,32 @@ class SmallItemListView extends StatelessWidget {
 class _FileDisplay extends StatelessWidget {
   late final String fielId;
   late final String name;
+  late final String ext;
 
   _FileDisplay(_fielId) {
     fielId = _fielId;
-    name = FilesVO.getItemVO(_fielId).entityFile.fileName!;
+    var itemVo = FilesVO.getItemVO(_fielId).entityFile;
+    name = itemVo.fileName!;
+    ext = itemVo.fileType!;
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-        style: TextButton.styleFrom(
-          foregroundColor: Color.fromARGB(255, 195, 133, 201),
-        ),
-        onPressed: () {
-          {
-            Navigator.pushNamed(context, "file/show",
-                arguments: <String, String>{'id': fielId});
-          }
-        },
-        child: Text(name));
+    return Row(
+      children: [
+        TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Color.fromARGB(255, 195, 133, 201),
+            ),
+            onPressed: () {
+              {
+                Navigator.pushNamed(context, "file/show",
+                    arguments: <String, String>{'id': fielId});
+              }
+            },
+            child: Text(name)),
+        Text(ext),
+      ],
+    );
   }
 }
