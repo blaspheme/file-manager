@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart' as drift;
-import 'package:file_manager/types/author_vo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

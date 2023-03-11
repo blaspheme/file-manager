@@ -48,6 +48,7 @@ class _FileSelectState extends State<FileSelect> {
   /// 刷新数据
   void doRefresh() async {
     var thisDB = Provider.of<MyDatabase>(context, listen: false);
+    await FilesVO.deleteEmptyRecord(thisDB);
     await FilesVO.init(thisDB);
     getData();
   }

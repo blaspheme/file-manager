@@ -42,9 +42,11 @@ class _FileForm extends State<FileEdit> {
 
     setState(() {
       entityFileId = queryId;
-      fileName.text = filesVO.entityFile.fileName!;
-      fileExt = filesVO.entityFile.fileType!;
-      description.text = filesVO.entityFile.description!;
+      if (filesVO.entityFile.fileName != null) {
+        fileName.text = filesVO.entityFile.fileName!;
+        fileExt = filesVO.entityFile.fileType!;
+        description.text = filesVO.entityFile.description!;
+      }
     });
   }
 

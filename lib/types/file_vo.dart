@@ -1,3 +1,5 @@
+import 'package:drift/drift.dart' as drift;
+
 import '../database/database.dart';
 
 /// 所有 Items 视图层对象
@@ -26,12 +28,22 @@ class FilesVO {
     return _cache.values.map((e) => e.entityFile).toList();
   }
 
+  /// 删除 EntityFile 表fileName是Null的数据
+  static deleteEmptyRecord(MyDatabase thisDB) async {
+    await thisDB.entityFiles.deleteWhere((tbl) => tbl.fileName.isNull());
+  }
+
   /// 初始化数据
   static Future<void> init(MyDatabase thisDB) async {
     clear();
 
     /// 开始初始化
-    var resultEntityItems = await (thisDB.select(thisDB.entityFiles)).get();
+    var resultEntityItems = await (thisDB.select(thisDB.entityFiles)
+          ..orderBy([
+            (t) => drift.OrderingTerm(
+                expression: t.createdAt, mode: drift.OrderingMode.desc)
+          ]))
+        .get();
     for (var row in resultEntityItems) {
       FilesVO(row.id!, row);
     }
